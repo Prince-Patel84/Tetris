@@ -80,7 +80,7 @@ void Draw(Grid* grid, Block* T) {
         cout << endl;
     }
 
-    SleepFunction(150);
+    SleepFunction(200);
 }
 
 void UserInput(Grid* grid,Block* tetromino) {
@@ -109,6 +109,9 @@ void UserInput(Grid* grid,Block* tetromino) {
                 if (tetromino->posX < 0) tetromino->posX = 0; 
                 if (tetromino->posX + 4 > WIDTH) tetromino->posX = WIDTH - 4; 
                 if (tetromino->posY + 4 > HEIGHT) tetromino->posY = HEIGHT - 4; 
+                break;
+            case 'x': 
+                GameStatus = false;
                 break;
         }
     }
