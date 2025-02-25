@@ -100,6 +100,10 @@ void UserInput(Grid* grid,Block* tetromino) {
                 if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
                     tetromino->posY += 1;
                 break;
+            case ' ': 
+                while(!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+                    tetromino->posY += 1;
+                break;
             case 'w': 
                 tetromino->rotate();
                 if (tetromino->posX < 0) tetromino->posX = 0; 
