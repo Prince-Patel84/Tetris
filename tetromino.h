@@ -1,8 +1,10 @@
 #pragma once
 #include "settings.h"
+
 class Block {
     public:
     int block[4][4];
+    int prevBlock[4][4];
     int posX, posY; 
 
     Block() {
@@ -14,6 +16,7 @@ class Block {
     }
 
     void rotate() {
+        saveState();
         int temp[4][4];
 
         for (int i = 0; i < 4; i++)
@@ -23,6 +26,18 @@ class Block {
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 block[i][j] = temp[i][3 - j];
+    }
+
+    void rotateBack(){
+        for(int i = 0; i< 4; i++)
+            for(int j = 0; j<4; j++)
+                block[i][j] = prevBlock[i][j];
+    }
+private:
+    void saveState(){
+        for(int i = 0; i< 4; i++)
+            for(int j = 0; j<4; j++)
+                prevBlock[i][j] = block[i][j];
     }
 };
 
