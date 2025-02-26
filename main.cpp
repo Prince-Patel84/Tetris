@@ -14,8 +14,9 @@ int main()
         UserInput(grid, Tetromino);
         Gamelogic(grid, Tetromino, nextTetromino);
         Draw(grid, Tetromino, nextTetromino);
+        
     }
-
+    
     // End();
     return 0;
 }
