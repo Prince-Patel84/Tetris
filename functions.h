@@ -8,23 +8,121 @@
 #include <iostream>
 using namespace std;
 
-//Function Declaration
-Grid* Start();
-void Draw(Grid* grid, Block* T);
-void UserInput(Grid* grid,Block* tetromino);
-void Gamelogic(Grid* grid, Block*& tetromino);
+// Function Declaration
+Grid *Start();
+void UserInput(Grid *grid, Block *tetromino);
+void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino);
+void Draw(Grid *grid, Block *T, Block *NT);
 void End();
 
-Block* GenerateRandomTetromino();
-bool CheckCollision(Grid* grid, Block* tetromino, int newX, int newY);
+Block *GenerateRandomTetromino(Grid *grid);
+bool CheckCollision(Grid *grid, Block *tetromino, int newX, int newY);
 
-//Function Definitions 
-Grid* Start() {
+// Function Definitions
+Grid *Start()
+{
     GameStatus = true;
     return new Grid();
 }
 
-void Draw(Grid* grid, Block* T) {
+void UserInput(Grid *grid, Block *tetromino)
+{
+    if (_kbhit())
+    {
+        char key = _getch();
+
+        switch (key)
+        {
+        case 'a':
+            if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
+                tetromino->posX -= 1;
+            break;
+        case 'd':
+            if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
+                tetromino->posX += 1;
+            break;
+        case 's':
+            if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+                tetromino->posY += 1;
+            break;
+        case ' ':
+            while (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+                tetromino->posY += 1;
+            break;
+        case 'w':
+            tetromino->rotate();
+            if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
+            {
+                tetromino->rotateBack();
+            }
+            break;
+        case 'x':
+            GameStatus = false;
+            break;
+        }
+    }
+}
+
+void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino)
+{
+
+    for (int i = HEIGHT - 1; i >= 0; i--)
+    {
+        bool isFullRow = true;
+        for (int j = WIDTH - 1; j >= 0; j--)
+        {
+            if (!grid->grid[i][j])
+            {
+                isFullRow = false;
+                break;
+            }
+        }
+        if (isFullRow)
+        {
+
+            for (int p = i; p > 0; p--)
+                for (int j = WIDTH - 1; j >= 0; j--)
+                {
+                    grid->grid[p][j] = grid->grid[p - 1][j];
+                }
+
+            for (int j = WIDTH - 1; j >= 0; j--)
+            {
+                grid->grid[0][j] = 0;
+            }
+
+            i++;
+        }
+    }
+
+    if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+    {
+        tetromino->posY += 1;
+    }
+    else
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (tetromino->block[i][j] == 1)
+                {
+                    int x = tetromino->posX + j;
+                    int y = tetromino->posY + i;
+                    if (y >= 0)
+                        grid->grid[y][x] = 1;
+                }
+            }
+        }
+
+        delete tetromino;
+        tetromino = newtetromino;
+        newtetromino = GenerateRandomTetromino(grid);
+    }
+}
+
+void Draw(Grid *grid, Block *T, Block *NT)
+{
     ClearScreen(true);
 
     int tempGrid[HEIGHT][WIDTH];
@@ -33,143 +131,141 @@ void Draw(Grid* grid, Block* T) {
         for (int j = 0; j < WIDTH; j++)
             tempGrid[i][j] = grid->grid[i][j];
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (T->block[i][j] == 1) { 
-                int x = T->posX + j;  
-                int y = T->posY + i;  
-                if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) {
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (T->block[i][j] == 1)
+            {
+                int x = T->posX + j;
+                int y = T->posY + i;
+                if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH)
+                {
                     tempGrid[y][x] = 1;
                 }
             }
         }
     }
 
-    for (int i = 0; i < HEIGHT + 2; i++) {
-        for (int j = 0; j < WIDTH + 2; j++) {
-            if (i == 0 || j == 0 || j == WIDTH + 1 || i == HEIGHT + 1)
+    for (int i = 0; i < HEIGHT + 2; i++)
+    {
+        for (int j = 0; j < WIDTH + 2 + 5 + 1; j++)
+        {
+            if (i == 1 && j == WIDTH + 2)
+            {
+                cout << "Next :";
+                j = WIDTH + 4;
+            }
+            else if (i == 0 || j == 0 || j == WIDTH + 1 || i == HEIGHT + 1 || j == WIDTH + 2 + 5)
                 cout << "# ";
-            else if (tempGrid[i - 1][j - 1] == 1)
+            else if ((tempGrid[i - 1][j - 1] == 1) && (j < WIDTH + 2))
                 cout << "& ";
+            else if ((i > 2) && (i < 6) && (j > WIDTH + 2) && (NT->block[i - 3][j - WIDTH - 3] == 1))
+            {
+                cout << "N ";
+            }
             else
                 cout << "  ";
         }
+
         cout << endl;
     }
-
     SleepFunction(200);
 }
 
-void UserInput(Grid* grid,Block* tetromino) {
-    if (_kbhit()) {  
-        char key = _getch(); 
+Block *GenerateRandomTetromino(Grid *grid)
+{
+    srand(time(0));
+    int randomNum = rand() % 7;
 
-        switch (key) {
-            case 'a':
-                if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
-                    tetromino->posX -= 1;
-                break;
-            case 'd': 
-                if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
-                    tetromino->posX += 1;
-                break;
-            case 's': 
-                if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
-                    tetromino->posY += 1;
-                break;
-            case ' ': 
-                while(!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
-                    tetromino->posY += 1;
-                break;
-            case 'w': 
-                tetromino->rotate();
-                if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY)) {
-                    tetromino->rotateBack();
-                }
-                break;
-            case 'x': 
-                GameStatus = false;
-                break;
-        }
+    switch (randomNum)
+    {
+    case 0:
+    {
+        Block *NewTetromino = new TetrominoI();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        return NewTetromino;
     }
-}
-
-Block* GenerateRandomTetromino() {
-srand(time(0));
-int randomNum = rand() % 7;
-
-    switch (randomNum) {
-        case 0: return new TetrominoI();
-        case 1: return new TetrominoO();
-        case 2: return new TetrominoT();
-        case 3: return new TetrominoL();
-        case 4: return new TetrominoJ();
-        case 5: return new TetrominoS();
-        case 6: return new TetrominoZ();
+    break;
+    case 1:
+    {
+        Block *NewTetromino = new TetrominoO();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        NewTetromino->posY = -1;
+        return NewTetromino;
+    }
+    break;
+    case 2:
+    {
+        Block *NewTetromino = new TetrominoT();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        NewTetromino->posY = -1;
+        return NewTetromino;
+    }
+    break;
+    case 3:
+    {
+        Block *NewTetromino = new TetrominoL();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        return NewTetromino;
+    }
+    break;
+    case 4:
+    {
+        Block *NewTetromino = new TetrominoJ();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        return NewTetromino;
+    }
+    break;
+    case 5:
+    {
+        Block *NewTetromino = new TetrominoS();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        NewTetromino->posY = -1;
+        return NewTetromino;
+    }
+    break;
+    case 6:
+    {
+        Block *NewTetromino = new TetrominoZ();
+        if (CheckCollision(grid, NewTetromino, NewTetromino->posX, NewTetromino->posY))
+            GameStatus = false;
+        NewTetromino->posY = -1;
+        return NewTetromino;
+    }
+    break;
     }
     return new TetrominoI();
 }
 
-bool CheckCollision(Grid* grid, Block* tetromino, int newX, int newY) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetromino->block[i][j] == 1) {  
+bool CheckCollision(Grid *grid, Block *tetromino, int newX, int newY)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+
+            if (tetromino->block[i][j] == 1)
+            {
                 int x = newX + j;
                 int y = newY + i;
 
-                if (x < 0 || x >= WIDTH)  
+                if (x < 0 || x >= WIDTH)
                     return true;
 
-                if (y >= HEIGHT)  
+                if (y >= HEIGHT)
                     return true;
 
-                if (y >= 0 && grid->grid[y][x] == 1)  
+                if (y >= 0 && grid->grid[y][x] == 1)
                     return true;
             }
         }
     }
     return false;
-}
-
-void Gamelogic(Grid* grid, Block*& tetromino) {
-
-    for(int i = HEIGHT-1; i>=0; i--){
-        bool isFullRow = true;
-        for(int j = WIDTH-1; j>=0; j--){
-            if(!grid->grid[i][j]){
-                isFullRow = false;
-                break;
-            }
-        }
-        if(isFullRow){
-            
-            for(int p = i; p>0; p--)
-                for(int j = WIDTH-1; j>=0; j--){
-                    grid->grid[p][j] = grid->grid[p-1][j];
-                }
-            
-            for(int j = WIDTH-1; j>=0; j--){
-                grid->grid[0][j] = 0;
-            }
-
-            i++;
-        }
-    }
-
-    if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1)) {
-        tetromino->posY += 1;
-    } else {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (tetromino->block[i][j] == 1) {
-                    int x = tetromino->posX + j;
-                    int y = tetromino->posY + i;
-                    if (y >= 0) grid->grid[y][x] = 1;
-                }
-            }
-        }
-        
-        delete tetromino;
-        tetromino = GenerateRandomTetromino();
-    }
 }

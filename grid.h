@@ -1,12 +1,14 @@
 #pragma once
 
-class Grid {
-    public:
+class Grid
+{
+public:
     int grid[HEIGHT][WIDTH];
-    
-    Grid() {
+
+    Grid()
+    {
         for (int i = 0; i < HEIGHT; i++)
-        for (int j = 0; j < WIDTH; j++)
-        grid[i][j] = 0;
+            for (int j = 0; j < WIDTH; j++)
+                grid[i][j] = 0;
     }
 };

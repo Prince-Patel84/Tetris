@@ -1,6 +1,3 @@
-#ifndef CONIO_H
-#define CONIO_H
-
 #ifdef _WIN32
 #include <conio.h>
 #include <windows.h>
@@ -81,5 +78,3 @@ int _kbhit()
 
 
 #endif
-
-#endif // CONIO_H
