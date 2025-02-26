@@ -105,12 +105,12 @@ void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino)
         {
             for (int j = 0; j < 4; j++)
             {
-                if (tetromino->block[i][j] == 1)
+                if (tetromino->block[i][j] > 0)
                 {
                     int x = tetromino->posX + j;
                     int y = tetromino->posY + i;
                     if (y >= 0)
-                        grid->grid[y][x] = 1;
+                        grid->grid[y][x] = tetromino->block[i][j];
                 }
             }
         }
@@ -135,13 +135,13 @@ void Draw(Grid *grid, Block *T, Block *NT)
     {
         for (int j = 0; j < 4; j++)
         {
-            if (T->block[i][j] == 1)
+            if (T->block[i][j] > 0)
             {
                 int x = T->posX + j;
                 int y = T->posY + i;
                 if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH)
                 {
-                    tempGrid[y][x] = 1;
+                    tempGrid[y][x] = T->block[i][j];
                 }
             }
         }
@@ -158,11 +158,11 @@ void Draw(Grid *grid, Block *T, Block *NT)
             }
             else if (i == 0 || j == 0 || j == WIDTH + 1 || i == HEIGHT + 1 || j == WIDTH + 2 + 5)
                 cout << "# ";
-            else if ((tempGrid[i - 1][j - 1] == 1) && (j < WIDTH + 2))
-                cout << "& ";
-            else if ((i > 2) && (i < 6) && (j > WIDTH + 2) && (NT->block[i - 3][j - WIDTH - 3] == 1))
+            else if ((tempGrid[i - 1][j - 1] > 0) && (j < WIDTH + 2))
+                cout << TS[tempGrid[i - 1][j - 1]] << ' ';
+            else if ((i > 2) && (i < 7) && (j > WIDTH + 2) && (NT->block[i - 3][j - WIDTH - 3] > 0))
             {
-                cout << "N ";
+                cout << TS[NT->block[i - 3][j - WIDTH - 3]] << ' ';
             }
             else
                 cout << "  ";
@@ -251,7 +251,7 @@ bool CheckCollision(Grid *grid, Block *tetromino, int newX, int newY)
         for (int j = 0; j < 4; j++)
         {
 
-            if (tetromino->block[i][j] == 1)
+            if (tetromino->block[i][j] > 0)
             {
                 int x = newX + j;
                 int y = newY + i;
@@ -262,7 +262,7 @@ bool CheckCollision(Grid *grid, Block *tetromino, int newX, int newY)
                 if (y >= HEIGHT)
                     return true;
 
-                if (y >= 0 && grid->grid[y][x] == 1)
+                if (y >= 0 && grid->grid[y][x] > 0)
                     return true;
             }
         }

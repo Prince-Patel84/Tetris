@@ -61,7 +61,7 @@ class TetrominoO : public Block
 public:
     TetrominoO() : Block()
     {
-        block[1][1] = block[1][2] = block[2][1] = block[2][2] = 1;
+        block[1][1] = block[1][2] = block[2][1] = block[2][2] = 2;
     }
 };
 
@@ -70,7 +70,7 @@ class TetrominoT : public Block
 public:
     TetrominoT() : Block()
     {
-        block[1][0] = block[1][1] = block[1][2] = block[2][1] = 1;
+        block[1][0] = block[1][1] = block[1][2] = block[2][1] = 3;
     }
 };
 
@@ -79,7 +79,7 @@ class TetrominoL : public Block
 public:
     TetrominoL() : Block()
     {
-        block[0][2] = block[1][2] = block[2][2] = block[2][1] = 1;
+        block[0][2] = block[1][2] = block[2][2] = block[2][1] = 4;
     }
 };
 
@@ -88,7 +88,7 @@ class TetrominoJ : public Block
 public:
     TetrominoJ() : Block()
     {
-        block[0][1] = block[1][1] = block[2][1] = block[2][2] = 1;
+        block[0][1] = block[1][1] = block[2][1] = block[2][2] = 5;
     }
 };
 
@@ -97,7 +97,7 @@ class TetrominoS : public Block
 public:
     TetrominoS() : Block()
     {
-        block[1][1] = block[1][2] = block[2][0] = block[2][1] = 1;
+        block[1][1] = block[1][2] = block[2][0] = block[2][1] = 6;
     }
 };
 
@@ -106,6 +106,6 @@ class TetrominoZ : public Block
 public:
     TetrominoZ() : Block()
     {
-        block[1][0] = block[1][1] = block[2][1] = block[2][2] = 1;
+        block[1][0] = block[1][1] = block[2][1] = block[2][2] = 7;
     }
 };
