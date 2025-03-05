@@ -1,18 +1,18 @@
 #pragma once
-
 #include "tetromino.h"
 #include "grid.h"
 #include <cstdlib>
 #include <ctime>
 #include "winlix.h"
+#include "scoremanager.h"
 #include <iostream>
 using namespace std;
 
 // Function Declaration
 Grid *Start();
-void UserInput(Grid *grid, Block *tetromino);
-void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino);
-void Draw(Grid *grid, Block *T, Block *NT);
+void UserInput(Grid *grid, Block *tetromino, Score *&s);
+void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino, Score *&score);
+void Draw(Grid *grid, Block *T, Block *NT, Score *&s);
 void End();
 
 Block *GenerateRandomTetromino(Grid *grid);
@@ -25,7 +25,7 @@ Grid *Start()
     return new Grid();
 }
 
-void UserInput(Grid *grid, Block *tetromino)
+void UserInput(Grid *grid, Block *tetromino, Score *&s)
 {
     if (_kbhit())
     {
@@ -43,12 +43,19 @@ void UserInput(Grid *grid, Block *tetromino)
             break;
         case 's':
             if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+            {
                 tetromino->posY += 1;
+                s->softDropBonus(1);
+            }
             break;
         case ' ':
+        {
+            int oldPosY = tetromino->posY;
             while (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
                 tetromino->posY += 1;
-            break;
+            s->hardDropBonus(tetromino->posY - oldPosY);
+        }
+        break;
         case 'w':
             tetromino->rotate();
             if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
@@ -63,9 +70,9 @@ void UserInput(Grid *grid, Block *tetromino)
     }
 }
 
-void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino)
+void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino, Score *&score)
 {
-
+    int rC = 0;
     for (int i = HEIGHT - 1; i >= 0; i--)
     {
         bool isFullRow = true;
@@ -90,15 +97,18 @@ void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino)
             {
                 grid->grid[0][j] = 0;
             }
-
+            rC++;
             i++;
         }
     }
 
+    if (tetromino->name == 'T' && rC)
+        score->addScore(rC, true);
+    else if (rC)
+        score->addScore(rC);
+
     if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
-    {
         tetromino->posY += 1;
-    }
     else
     {
         for (int i = 0; i < 4; i++)
@@ -121,7 +131,7 @@ void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino)
     }
 }
 
-void Draw(Grid *grid, Block *T, Block *NT)
+void Draw(Grid *grid, Block *T, Block *NT, Score *&s)
 {
     ClearScreen(true);
 
@@ -170,7 +180,9 @@ void Draw(Grid *grid, Block *T, Block *NT)
 
         cout << endl;
     }
-    SleepFunction(200);
+    cout << "Score: " << s->getScore() << "  Level: " << s->getLevel() << endl;
+
+    SleepFunction(Speed);
 }
 
 Block *GenerateRandomTetromino(Grid *grid)

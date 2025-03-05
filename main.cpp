@@ -1,19 +1,17 @@
-#include "settings.h"
-#include "tetromino.h"
-#include "grid.h"
-#include "functions.h"
+#include "game.h"
 
 int main()
 {
     Grid *grid = Start();
     Block *Tetromino = GenerateRandomTetromino(grid);
     Block *nextTetromino = GenerateRandomTetromino(grid);
+    Score *score = new Score();
 
     while (GameStatus)
     {
-        UserInput(grid, Tetromino);
-        Gamelogic(grid, Tetromino, nextTetromino);
-        Draw(grid, Tetromino, nextTetromino);
+        UserInput(grid, Tetromino, score);
+        Gamelogic(grid, Tetromino, nextTetromino, score);
+        Draw(grid, Tetromino, nextTetromino, score);
     }
 
     // End();
