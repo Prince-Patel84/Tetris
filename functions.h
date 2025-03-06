@@ -15,6 +15,7 @@ void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino, Score *&scor
 void Draw(Grid *grid, Block *T, Block *NT, Score *&s);
 void End(Grid *&g, Score *&s, Block *&t, Block *&nt);
 void PlayAgain(Grid *&g, Score *&s, Block *&t, Block *&nt);
+void Won(Grid *&g, Score *&s, Block *&t, Block *&nt);
 
 Block *GenerateRandomTetromino(Grid *grid);
 bool CheckCollision(Grid *grid, Block *tetromino, int newX, int newY);
@@ -177,6 +178,11 @@ void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino, Score *&scor
         tetromino = newtetromino;
         newtetromino = GenerateRandomTetromino(grid);
     }
+
+    if(score->getScore() > 9999){
+        GameWon = true;
+        GameStatus = false;
+    }
 }
 
 void Draw(Grid *grid, Block *T, Block *NT, Score *&s)
@@ -269,7 +275,7 @@ void Draw(Grid *grid, Block *T, Block *NT, Score *&s)
         cout << "           |              \n                                               |              ";
 
     }
-    cout<<"                                               |              \n                                               ----------===========================================----------  "<<endl;
+    cout<<"                                               |              \n                                               ----------===========================================----------"<<endl;
     SleepFunction(Speed);
 }
 
@@ -311,6 +317,7 @@ void PlayAgain(Grid *&g, Score *&s, Block *&t, Block *&nt)
     delete t;
     delete nt;
     GameStatus = true;
+    GameWon = false;
     t = GenerateRandomTetromino(g);
     nt = GenerateRandomTetromino(g);
 
@@ -321,7 +328,46 @@ void PlayAgain(Grid *&g, Score *&s, Block *&t, Block *&nt)
         Draw(g, t, nt, s);
     }
 
-    End(g, s, t, nt);
+    if(!GameWon) End(g, s, t, nt);
+    else Won(g, s, t, nt);
+}
+
+void Won(Grid *&g, Score *&s, Block *&t, Block *&nt){
+    cout<<"                       0000000000000    0000     0000    000000000        000   "<<endl;
+    cout<<"                      000000000000000   00000   00000   0000000000       00000  "<<endl;
+    cout<<"                     000           000  000000 000000  000               00000  "<<endl;
+    cout<<"                     000           000  000 00000 000  000               00000  "<<endl;
+    cout<<"                     000           000  000  000  000  000       0000     000   "<<endl;
+    cout<<"                     000           000  000       000  000       0000           "<<endl;
+    cout<<"                      000000000000000   000       000   0000000000        000   "<<endl;
+    cout<<"                       0000000000000    000       000    00000000        00000  "<<endl;
+    cout<<"                  ----------===========================================----------"<<endl;
+    cout<<endl;
+    cout<<"                                     0     0                  0                    0           0000000 0               0000000                             "<<endl;
+    cout<<"                                      0   0                   0                    0              0    0              0       0                            "<<endl;
+    cout<<"                                       0 0                    0                    0  0           0    0              0                                    "<<endl;
+    cout<<"                                        0   00000  0    0     000000   0    00000  0 0   000      0    00000   000    0          000   0        000        "<<endl;
+    cout<<"                                        0  0     0 0    0     0     0  0 0 0     0 00   00000     0    0    0 00000   0     000 0   0  000 00  00000       "<<endl;
+    cout<<"                                        0  0     0 0    0     0     0  0   0     0 0 0  0         0    0    0 0       0     00   0000  0  0  0 0           "<<endl;
+    cout<<"                                        0   00000   0000      000000   0    00000  0  0  0000     0    0    0  0000    000000 0     00 0  0  0  0000  0 0 0"<<endl;
+    cout<<"                                  ------------=====================-----------------========================------------------======================----------"<<endl;
+    cout<<endl;
+    cout << "            000 _________________________________________________________________________________________________________________ 000" << endl;
+    cout << "           000 /         L L L I I I                                                                                     T J J J \\ 000" << endl;
+    cout << "          000 /          L CONTINUE J -Press P to Continue Playing..                                  Press X to Exit - T EXIT J  \\ 000" << endl;
+    cout << "         000 /           I I I J J J                                                                                     T I L L   \\ 000" << endl;
+    cout << "        000 /________________I-I___________________________________________________________________________________________I-I______\\ 000" << endl;
+    while (true)
+    {
+        char c = _getch();
+        if (c == 'p' || c == 'P')
+        {
+            PlayAgain(g, s, t, nt);
+            break;
+        }
+        else if (c == 'x' || c == 'X')
+            break;
+    }
 }
 
 Block *GenerateRandomTetromino(Grid *grid)

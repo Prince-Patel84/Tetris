@@ -2,6 +2,7 @@
 const int HEIGHT = 20;
 const int WIDTH = 10;
 bool GameStatus = false;
+bool GameWon = false;
 bool Game = true;
 int Speed = 350;
 

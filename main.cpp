@@ -14,8 +14,8 @@ int main()
             Gamelogic(grid, Tetromino, nextTetromino, score);
             Draw(grid, Tetromino, nextTetromino, score);
         }
-
-        End(grid, score, Tetromino, nextTetromino);
+        if(!GameWon) End(grid, score, Tetromino, nextTetromino);
+        else Won(grid, score, Tetromino, nextTetromino);
     }
     return 0;
 }
