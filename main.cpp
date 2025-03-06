@@ -6,14 +6,16 @@ int main()
     Block *Tetromino = GenerateRandomTetromino(grid);
     Block *nextTetromino = GenerateRandomTetromino(grid);
     Score *score = new Score();
-
-    while (GameStatus)
+    if (Game)
     {
-        UserInput(grid, Tetromino, score);
-        Gamelogic(grid, Tetromino, nextTetromino, score);
-        Draw(grid, Tetromino, nextTetromino, score);
-    }
+        while (GameStatus)
+        {
+            UserInput(grid, Tetromino, score);
+            Gamelogic(grid, Tetromino, nextTetromino, score);
+            Draw(grid, Tetromino, nextTetromino, score);
+        }
 
-    // End();
+        End(grid, score, Tetromino, nextTetromino);
+    }
     return 0;
 }

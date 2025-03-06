@@ -5,7 +5,7 @@ class Score
 {
 private:
     int score = 0;
-    int level = 0;
+    int level = 1;
     int linesCleared = 0;
 
 public:
@@ -15,8 +15,7 @@ public:
 
         if (tSpin)
         {
-            baseScore = (lines == 1) ? 800 : (lines == 2) ? 1200
-                                                          : 1600;
+            baseScore = (lines == 1) ? 800 : (lines == 2) ? 1200 : 1600;
         }
         else
         {
@@ -42,7 +41,7 @@ public:
         score += baseScore * (level + 1);
         linesCleared += lines;
 
-        if (linesCleared >= 10)
+        if (linesCleared >= 3)
         {
             levelUp();
         }
@@ -67,4 +66,10 @@ public:
 
     int getScore() { return score; }
     int getLevel() { return level; }
+
+    void resetScore(){
+        score = 0;
+        level = 1;
+        linesCleared = 0;
+    }
 };

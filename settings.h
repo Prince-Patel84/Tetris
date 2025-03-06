@@ -2,6 +2,7 @@
 const int HEIGHT = 20;
 const int WIDTH = 10;
 bool GameStatus = false;
+bool Game = true;
 int Speed = 350;
 
 const char TS[] = {' ', 'I', 'O', 'T', 'L', 'J', 'S', 'Z'}; // Symbols for Tetromino

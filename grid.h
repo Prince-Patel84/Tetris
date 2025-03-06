@@ -11,4 +11,10 @@ public:
             for (int j = 0; j < WIDTH; j++)
                 grid[i][j] = 0;
     }
+
+    void resetGrid(){
+        for (int i = 0; i < HEIGHT; i++)
+            for (int j = 0; j < WIDTH; j++)
+                grid[i][j] = 0;
+    }
 };
