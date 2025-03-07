@@ -79,41 +79,57 @@ void UserInput(Grid *grid, Block *tetromino, Score *&s)
     {
         char key = _getch();
 
-        switch (key)
+        if (key == '\033')
         {
-        case 'a':
-            if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
-                tetromino->posX -= 1;
-            break;
-        case 'd':
-            if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
-                tetromino->posX += 1;
-            break;
-        case 's':
-            if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+            if (_kbhit() && _getch() == '[')
             {
-                tetromino->posY += 1;
-                s->softDropBonus(1);
+                char arrowKey = _getch();
+                switch (arrowKey)
+                {
+                case 'A':
+                    tetromino->rotate();
+                    if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
+                    {
+                        tetromino->rotateBack();
+                    }
+                    break;
+                case 'B':
+                    if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+                    {
+                        tetromino->posY += 1;
+                        s->softDropBonus(1);
+                    }
+                    break;
+                case 'C':
+                    if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
+                        tetromino->posX += 1;
+                    break;
+                case 'D':
+                    if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
+                        tetromino->posX -= 1;
+                    break;
+                case 27:
+                    GameStatus = false;
+                    break;
+                }
             }
-            break;
-        case ' ':
-        {
-            int oldPosY = tetromino->posY;
-            while (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
-                tetromino->posY += 1;
-            s->hardDropBonus(tetromino->posY - oldPosY);
         }
-        break;
-        case 'w':
-            tetromino->rotate();
-            if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
+        else
+        {
+            switch (key)
             {
-                tetromino->rotateBack();
+            case ' ':
+            {
+                int oldPosY = tetromino->posY;
+                while (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+                    tetromino->posY += 1;
+                s->hardDropBonus(tetromino->posY - oldPosY);
             }
             break;
-        case 'x':
-            GameStatus = false;
-            break;
+            case 27:
+                GameStatus = false;
+                break;
+            }
         }
     }
 }
@@ -179,7 +195,8 @@ void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino, Score *&scor
         newtetromino = GenerateRandomTetromino(grid);
     }
 
-    if(score->getScore() > 9999){
+    if (score->getScore() > 9999)
+    {
         GameWon = true;
         GameStatus = false;
     }
@@ -211,15 +228,15 @@ void Draw(Grid *grid, Block *T, Block *NT, Score *&s)
         }
     }
 
-    //Grid Printing
-    cout<<"                                               ----------===========================================----------  "<<endl;
-    cout<<"                                               |         0000000 000000 0000000 0000  0000000  00000         |  "<<endl;
-    cout<<"                                               |            0    0         0    0   0    0    0              |  "<<endl;
-    cout<<"                                               |            0    0000      0    0000     0     00000         |  "<<endl;
-    cout<<"                                               |            0    0         0    0  0     0          0        |  "<<endl;
-    cout<<"                                               |            0    000000    0    0   0 0000000  00000         |  "<<endl;
-    cout<<"                                               |                                                             |  "<<endl;
-    cout<<"                                               |              ";
+    // Grid Printing
+    cout << "                                               ----------===========================================----------  " << endl;
+    cout << "                                               |         0000000 000000 0000000 0000  0000000  00000         |  " << endl;
+    cout << "                                               |            0    0         0    0   0    0    0              |  " << endl;
+    cout << "                                               |            0    0000      0    0000     0     00000         |  " << endl;
+    cout << "                                               |            0    0         0    0  0     0          0        |  " << endl;
+    cout << "                                               |            0    000000    0    0   0 0000000  00000         |  " << endl;
+    cout << "                                               |                                                             |  " << endl;
+    cout << "                                               |              ";
     for (int i = 0; i < HEIGHT + 2; i++)
     {
         for (int j = 0; j < WIDTH + 2 + 5 + 1; j++)
@@ -273,9 +290,8 @@ void Draw(Grid *grid, Block *T, Block *NT, Score *&s)
                 cout << "  ";
         }
         cout << "           |              \n                                               |              ";
-
     }
-    cout<<"                                               |              \n                                               ----------===========================================----------"<<endl;
+    cout << "                                               |              \n                                               ----------===========================================----------" << endl;
     SleepFunction(Speed);
 }
 
@@ -328,30 +344,33 @@ void PlayAgain(Grid *&g, Score *&s, Block *&t, Block *&nt)
         Draw(g, t, nt, s);
     }
 
-    if(!GameWon) End(g, s, t, nt);
-    else Won(g, s, t, nt);
+    if (!GameWon)
+        End(g, s, t, nt);
+    else
+        Won(g, s, t, nt);
 }
 
-void Won(Grid *&g, Score *&s, Block *&t, Block *&nt){
-    cout<<"                       0000000000000    0000     0000    000000000        000   "<<endl;
-    cout<<"                      000000000000000   00000   00000   0000000000       00000  "<<endl;
-    cout<<"                     000           000  000000 000000  000               00000  "<<endl;
-    cout<<"                     000           000  000 00000 000  000               00000  "<<endl;
-    cout<<"                     000           000  000  000  000  000       0000     000   "<<endl;
-    cout<<"                     000           000  000       000  000       0000           "<<endl;
-    cout<<"                      000000000000000   000       000   0000000000        000   "<<endl;
-    cout<<"                       0000000000000    000       000    00000000        00000  "<<endl;
-    cout<<"                  ----------===========================================----------"<<endl;
-    cout<<endl;
-    cout<<"                                     0     0                  0                    0           0000000 0               0000000                             "<<endl;
-    cout<<"                                      0   0                   0                    0              0    0              0       0                            "<<endl;
-    cout<<"                                       0 0                    0                    0  0           0    0              0                                    "<<endl;
-    cout<<"                                        0   00000  0    0     000000   0    00000  0 0   000      0    00000   000    0          000   0        000        "<<endl;
-    cout<<"                                        0  0     0 0    0     0     0  0 0 0     0 00   00000     0    0    0 00000   0     000 0   0  000 00  00000       "<<endl;
-    cout<<"                                        0  0     0 0    0     0     0  0   0     0 0 0  0         0    0    0 0       0     00   0000  0  0  0 0           "<<endl;
-    cout<<"                                        0   00000   0000      000000   0    00000  0  0  0000     0    0    0  0000    000000 0     00 0  0  0  0000  0 0 0"<<endl;
-    cout<<"                                  ------------=====================-----------------========================------------------======================----------"<<endl;
-    cout<<endl;
+void Won(Grid *&g, Score *&s, Block *&t, Block *&nt)
+{
+    cout << "                       0000000000000    0000     0000    000000000        000   " << endl;
+    cout << "                      000000000000000   00000   00000   0000000000       00000  " << endl;
+    cout << "                     000           000  000000 000000  000               00000  " << endl;
+    cout << "                     000           000  000 00000 000  000               00000  " << endl;
+    cout << "                     000           000  000  000  000  000       0000     000   " << endl;
+    cout << "                     000           000  000       000  000       0000           " << endl;
+    cout << "                      000000000000000   000       000   0000000000        000   " << endl;
+    cout << "                       0000000000000    000       000    00000000        00000  " << endl;
+    cout << "                  ----------===========================================----------" << endl;
+    cout << endl;
+    cout << "                                     0     0                  0                    0           0000000 0               0000000                             " << endl;
+    cout << "                                      0   0                   0                    0              0    0              0       0                            " << endl;
+    cout << "                                       0 0                    0                    0  0           0    0              0                                    " << endl;
+    cout << "                                        0   00000  0    0     000000   0    00000  0 0   000      0    00000   000    0          000   0        000        " << endl;
+    cout << "                                        0  0     0 0    0     0     0  0 0 0     0 00   00000     0    0    0 00000   0     000 0   0  000 00  00000       " << endl;
+    cout << "                                        0  0     0 0    0     0     0  0   0     0 0 0  0         0    0    0 0       0     00   0000  0  0  0 0           " << endl;
+    cout << "                                        0   00000   0000      000000   0    00000  0  0  0000     0    0    0  0000    000000 0     00 0  0  0  0000  0 0 0" << endl;
+    cout << "                                  ------------=====================-----------------========================------------------======================----------" << endl;
+    cout << endl;
     cout << "            000 _________________________________________________________________________________________________________________ 000" << endl;
     cout << "           000 /         L L L I I I                                                                                     T J J J \\ 000" << endl;
     cout << "          000 /          L CONTINUE J -Press P to Continue Playing..                                  Press X to Exit - T EXIT J  \\ 000" << endl;
