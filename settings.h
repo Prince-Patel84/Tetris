@@ -10,7 +10,7 @@ const char TS[] = {' ', 'I', 'O', 'T', 'L', 'J', 'S', 'Z'}; // Symbols for Tetro
 
 // Scoring
 const int SINGLE = 100;
-const int DOUBLE = 300;
+const int TWO = 300;
 const int TRIPLE = 500;
 const int TETRIS = 800;
 const int SOFT_DROP_POINTS = 1;

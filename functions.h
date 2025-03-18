@@ -73,13 +73,107 @@ Grid *Start()
     return new Grid();
 }
 
+// void UserInput(Grid *grid, Block *tetromino, Score *&s)
+// {
+//     if (_kbhit())
+//     {
+//         char key = _getch();
+
+//         if (key == '\033')
+//         {
+//             if (_kbhit() && _getch() == '[')
+//             {
+//                 char arrowKey = _getch();
+//                 switch (arrowKey)
+//                 {
+//                 case 'A':
+//                     tetromino->rotate();
+//                     if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
+//                     {
+//                         tetromino->rotateBack();
+//                     }
+//                     break;
+//                 case 'B':
+//                     if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+//                     {
+//                         tetromino->posY += 1;
+//                         s->softDropBonus(1);
+//                     }
+//                     break;
+//                 case 'C':
+//                     if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
+//                         tetromino->posX += 1;
+//                     break;
+//                 case 'D':
+//                     if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
+//                         tetromino->posX -= 1;
+//                     break;
+//                 case 27:
+//                     GameStatus = false;
+//                     break;
+//                 }
+//             }
+//         }
+//         else
+//         {
+//             switch (key)
+//             {
+//             case ' ':
+//             {
+//                 int oldPosY = tetromino->posY;
+//                 while (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+//                     tetromino->posY += 1;
+//                 s->hardDropBonus(tetromino->posY - oldPosY);
+//             }
+//             break;
+//             case 27:
+//                 GameStatus = false;
+//                 break;
+//             }
+//         }
+//     }
+// }
+
 void UserInput(Grid *grid, Block *tetromino, Score *&s)
 {
     if (_kbhit())
     {
         char key = _getch();
 
-        if (key == '\033')
+#ifdef _WIN32
+        // Windows arrow keys detection
+        if (key == -32)  // Arrow keys return -32 followed by another character in Windows
+        {
+            char arrowKey = _getch();
+            switch (arrowKey)
+            {
+            case 72:  // Up arrow key
+                tetromino->rotate();
+                if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
+                {
+                    tetromino->rotateBack();
+                }
+                break;
+            case 80:  // Down arrow key
+                if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
+                {
+                    tetromino->posY += 1;
+                    s->softDropBonus(1);
+                }
+                break;
+            case 77:  // Right arrow key
+                if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
+                    tetromino->posX += 1;
+                break;
+            case 75:  // Left arrow key
+                if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
+                    tetromino->posX -= 1;
+                break;
+            }
+        }
+#else
+        // Linux arrow keys detection
+        if (key == '\033') // Escape character in Linux
         {
             if (_kbhit() && _getch() == '[')
             {
@@ -108,12 +202,10 @@ void UserInput(Grid *grid, Block *tetromino, Score *&s)
                     if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
                         tetromino->posX -= 1;
                     break;
-                case 27:
-                    GameStatus = false;
-                    break;
                 }
             }
         }
+#endif
         else
         {
             switch (key)
@@ -133,6 +225,7 @@ void UserInput(Grid *grid, Block *tetromino, Score *&s)
         }
     }
 }
+
 
 void Gamelogic(Grid *grid, Block *&tetromino, Block *&newtetromino, Score *&score)
 {

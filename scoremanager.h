@@ -25,7 +25,7 @@ public:
                 baseScore = SINGLE;
                 break;
             case 2:
-                baseScore = DOUBLE;
+                baseScore = TWO;
                 break;
             case 3:
                 baseScore = TRIPLE;
