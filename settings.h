@@ -6,7 +6,7 @@ bool GameWon = false;
 bool Game = true;
 int Speed = 350;
 
-const char TS[] = {' ', 'I', 'O', 'T', 'L', 'J', 'S', 'Z'}; // Symbols for Tetromino
+const char TS[] = {' ', 'I', 'O', 'T', 'J', 'L', 'S', 'Z'};
 
 // Scoring
 const int SINGLE = 100;
