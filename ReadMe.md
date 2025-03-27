@@ -18,6 +18,9 @@ This is a **Terminal-based Tetris game** implemented in **C++**. The game follow
 ✅ **Win Condition** - Score **9999 points** to win!  
 ✅ **Game Over** - The game ends if pieces reach the top.  
 
+## 🖼 Game Screenshot
+![Tetris Game](GameImage.jpg)
+
 ## 🎛 Controls
 - **⬅ Left Arrow** - Move left  
 - **➡ Right Arrow** - Move right  
