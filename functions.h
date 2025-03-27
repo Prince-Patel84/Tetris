@@ -73,67 +73,6 @@ Grid *Start()
     return new Grid();
 }
 
-// void UserInput(Grid *grid, Block *tetromino, Score *&s)
-// {
-//     if (_kbhit())
-//     {
-//         char key = _getch();
-
-//         if (key == '\033')
-//         {
-//             if (_kbhit() && _getch() == '[')
-//             {
-//                 char arrowKey = _getch();
-//                 switch (arrowKey)
-//                 {
-//                 case 'A':
-//                     tetromino->rotate();
-//                     if (CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY))
-//                     {
-//                         tetromino->rotateBack();
-//                     }
-//                     break;
-//                 case 'B':
-//                     if (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
-//                     {
-//                         tetromino->posY += 1;
-//                         s->softDropBonus(1);
-//                     }
-//                     break;
-//                 case 'C':
-//                     if (!CheckCollision(grid, tetromino, tetromino->posX + 1, tetromino->posY))
-//                         tetromino->posX += 1;
-//                     break;
-//                 case 'D':
-//                     if (!CheckCollision(grid, tetromino, tetromino->posX - 1, tetromino->posY))
-//                         tetromino->posX -= 1;
-//                     break;
-//                 case 27:
-//                     GameStatus = false;
-//                     break;
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             switch (key)
-//             {
-//             case ' ':
-//             {
-//                 int oldPosY = tetromino->posY;
-//                 while (!CheckCollision(grid, tetromino, tetromino->posX, tetromino->posY + 1))
-//                     tetromino->posY += 1;
-//                 s->hardDropBonus(tetromino->posY - oldPosY);
-//             }
-//             break;
-//             case 27:
-//                 GameStatus = false;
-//                 break;
-//             }
-//         }
-//     }
-// }
-
 void UserInput(Grid *grid, Block *tetromino, Score *&s)
 {
     if (_kbhit())
